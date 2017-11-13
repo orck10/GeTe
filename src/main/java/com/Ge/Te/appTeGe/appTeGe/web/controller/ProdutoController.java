@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +30,7 @@ public class ProdutoController {
 	ServicoProduto servicoProduto;
 	
 	@RequestMapping(value = "/getByNome")
+	@PreAuthorize("isAuthenticated()")
 	@JsonView(View.All.class)
 	public ResponseEntity<Produto> getByTipo(@RequestParam(value="nome", defaultValue="caneta") String nome){
 		Produto p = servicoProduto.buscaPorNome(nome);
@@ -39,6 +41,7 @@ public class ProdutoController {
 	}
 	
 	@RequestMapping(value = "/getById")
+	@PreAuthorize("isAuthenticated()")
 	@JsonView(View.Alternative.class)
 	public ResponseEntity<Produto> getById(@RequestParam(value="id", defaultValue="1") int id){
 		Produto p = servicoProduto.buscaPorId(id);
@@ -49,6 +52,7 @@ public class ProdutoController {
 	}
 	
 	@RequestMapping(value = "/deleteById")
+	@PreAuthorize("isAuthenticated()")
 	@JsonView(View.Alternative.class)
 	public ResponseEntity<Produto> deleteById(@RequestParam(value="id", defaultValue="1") int id){
 		servicoProduto.removeProduto(id);
@@ -57,18 +61,21 @@ public class ProdutoController {
 	}
 	
 	@RequestMapping(value = "/getAll")
+	@PreAuthorize("isAuthenticated()")
 	@JsonView(View.Alternative.class)
 	public ResponseEntity<Collection<Produto>> getAll() {
 		return new ResponseEntity<Collection<Produto>>(servicoProduto.listaDeProduto(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/getAlerta")
+	@PreAuthorize("isAuthenticated()")
 	@JsonView(View.Alternative.class)
 	public ResponseEntity<Collection<Produto>> getAlerta() {
 		return new ResponseEntity<Collection<Produto>>(servicoProduto.verificaMinio(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@JsonView(View.Alternative.class)
 	@ResponseStatus(HttpStatus.CREATED)
 	public Produto saveProduto(@RequestBody Produto p, HttpServletRequest request, HttpServletResponse response) {

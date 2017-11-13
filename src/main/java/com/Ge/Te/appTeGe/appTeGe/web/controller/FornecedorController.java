@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,6 +34,7 @@ public class FornecedorController {
 	}
 	
 	@RequestMapping(value = "/getByName")
+	@PreAuthorize("isAuthenticated()")
 	@JsonView(View.All.class)
 	public ResponseEntity<Fornecedor> getByName(@RequestParam(value="name", defaultValue="Tabajara LTDA") String name){
 		Fornecedor f = servicoFornecedor.buscaPorNome(name);
@@ -43,6 +45,7 @@ public class FornecedorController {
 	}
 	
 	@RequestMapping(value = "/getById")
+	@PreAuthorize("isAuthenticated()")
 	@JsonView(View.Alternative.class)
 	public ResponseEntity<Fornecedor> getById(@RequestParam(value="id", defaultValue="1") int id){
 		Fornecedor f = servicoFornecedor.buscaPorId(id);
@@ -53,12 +56,14 @@ public class FornecedorController {
 	}
 	
 	@RequestMapping(value = "/getAll")
+	@PreAuthorize("isAuthenticated()")
 	@JsonView(View.Alternative.class)
 	public ResponseEntity<Collection<Fornecedor>> getAll() {
 		return new ResponseEntity<Collection<Fornecedor>>(servicoFornecedor.listaFornecedor(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@JsonView(View.Alternative.class)
 	@ResponseStatus(HttpStatus.CREATED)
 	public Fornecedor saveFornecedor(@RequestBody Fornecedor f, HttpServletRequest request, HttpServletResponse response) {

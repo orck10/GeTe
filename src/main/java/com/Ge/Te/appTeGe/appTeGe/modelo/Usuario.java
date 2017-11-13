@@ -1,5 +1,6 @@
 package com.Ge.Te.appTeGe.appTeGe.modelo;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -17,6 +18,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.Ge.Te.appTeGe.appTeGe.view.View;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -24,8 +30,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Table(name = "Usuario")
-public class Usuario {
+public class Usuario implements UserDetails{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id 
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "usu_Id")
@@ -84,6 +92,47 @@ public class Usuario {
 	}
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+	
+	@Override
+	@JsonIgnore
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return this.perfis;
+	}
+	@Override
+	@JsonIgnore
+	public String getPassword() {
+		return senha;
+	}
+
+	@Override
+	@JsonIgnore
+	public String getUsername() {
+		return nome;
+	}
+
+	@Override
+	@JsonIgnore
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	@JsonIgnore
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	@JsonIgnore
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	@JsonIgnore
+	public boolean isEnabled() {
+		return true;
 	}
 	
 	

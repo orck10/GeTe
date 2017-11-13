@@ -27,7 +27,6 @@ public class App
         ServicoFornecedor servicoFor = (ServicoFornecedor) context.getBean("servicoFornecedor");
         ServicoProduto servicoProd = (ServicoProduto) context.getBean("servicoProduto");
         
-        servicoProd.addFronecedor(1, 1);
     }
     
 }
